@@ -1,0 +1,7 @@
+export { default as bg } from './bg.jpg'
+export { default as loginBackground } from './login_background.jpg'
+export { default as hitMusicPerson } from './hit_music_person.png'
+export { default as relaxMusicPerson } from './relax.webp'
+export { default as popMusicPerson } from './pop_music.png'
+export { default as nostalgicMusic } from './notalgic_music.png'
+export { default as NotFoundImage } from './not-found.jpg'

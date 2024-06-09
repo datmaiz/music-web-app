@@ -1,0 +1,40 @@
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+input:disabled, button:disabled {
+  cursor: not-allowed;
+  background: gray;
+}
+
+select {
+  appearance: none;
+  position: relative;
+  outline: none;
+}
+
+select:before {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  display: block;
+  background: red;
+  width: 100%;
+  z-index: 1;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fff0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #fe5a00;
+  border-radius: 100rem;
+}
