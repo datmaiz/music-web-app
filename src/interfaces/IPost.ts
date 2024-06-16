@@ -1,4 +1,5 @@
 import { IUser } from "@/interfaces/IUser.ts";
+import { IComment } from "@/interfaces/IComment.ts";
 
 export interface IPost {
   _id: string
@@ -9,6 +10,7 @@ export interface IPost {
   likes: string[]
   shares: string[]
   tags: string[]
+  comments: IComment[]
   createdAt: string
   updatedAt: string
 }

@@ -16,6 +16,7 @@ export const getUsers = async (): Promise<SuccessResponse<IUser[]> | ErrorRespon
 export const login = async (email: string, password: string): Promise<SuccessResponse<IUser> | ErrorResponse> => {
   let response
   try {
+
     response = await api.post<SuccessResponse<IUser>>('/users/login', { email, password })
     return response.data
   } catch (err) {

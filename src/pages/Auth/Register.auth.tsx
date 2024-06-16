@@ -26,19 +26,17 @@ export const Register: React.FC = () => {
     setPassword(value)
   }, [])
 
-  const handleRegister = useCallback(() => {
-    (async () => {
-      setLoading(true)
-      const response = await register(email, password)
-      setLoading(false)
-      if (response instanceof ErrorResponse) {
-        toast.error(response.error)
-        return
-      }
+  const handleRegister = async () => {
+    setLoading(true)
+    const response = await register(email, password)
+    setLoading(false)
+    if (response instanceof ErrorResponse) {
+      toast.error(response.error)
+      return
+    }
 
-      navigate('/login')
-    })()
-  }, [])
+    navigate('/login')
+  }
 
   return <section className='w-full flex justify-center items-center h-dvh p-5 relative'>
     <div
@@ -79,13 +77,14 @@ export const Register: React.FC = () => {
 
       {loading ? <div className={'flex justify-center'}><LoadingIcon color={'white'} /></div>
         : <Button
-        size={'full'}
-        shape={'rounded'}
-        onClick={handleRegister}
-      >Create new account</Button>}
+          size={'full'}
+          shape={'rounded'}
+          onClick={handleRegister}
+        >Create new account</Button>}
 
       <Link to={'/register'} className={'text-white'}>Already have account</Link>
     </div>
-    <img src={loginBackground} alt="login background" className={'absolute inset-0 w-full h-full object-cover z-[-1]'}/>
+    <img src={loginBackground} alt="login background"
+         className={'absolute inset-0 w-full h-full object-cover z-[-1]'} />
   </section>
 }

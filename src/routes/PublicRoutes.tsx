@@ -8,6 +8,7 @@ import { MusicsManagement, UserDetail, UsersManagement } from "@/pages/Admin";
 import { Upload } from "@/pages/Upload";
 import { Favorite } from "@/pages/Favorite";
 import { Stream } from "@/pages/Stream";
+import PostManagement from "@/pages/Admin/PostManagement.tsx";
 
 const {
   HOME,
@@ -21,6 +22,7 @@ const {
   REGISTER,
   USER_MANAGEMENT,
   MUSIC_MANAGEMENT,
+  POST_MANAGEMENT,
   USER_DETAIL,
   PLAYLIST_DETAIL,
   UPLOAD,
@@ -95,6 +97,10 @@ export const PublicRoutes = createBrowserRouter([
           {
             path: USER_DETAIL,
             element: <UserDetail />
+          },
+          {
+            path: POST_MANAGEMENT,
+            element: <PostManagement />
           }
         ]
       },

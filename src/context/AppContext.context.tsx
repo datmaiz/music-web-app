@@ -37,8 +37,7 @@ export const AppContext = createContext<AppContextProps>({
   setIsRandom: () => {},
   isPlayerShow: true,
   setIsPlayerShow: () => {},
-  songs: [],
-  setSongs: () => {},
+  songs: [],  setSongs: () => {},
   currentSong: 0,
   setCurrentSong: () => {},
 })
@@ -48,7 +47,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [repeatType, setRepeatType] = useState<TRepeat>('none');
   const [isRandom, setIsRandom] = useState<boolean>(false)
   const [isPlayerShow, setIsPlayerShow] = useState<boolean>(true)
-  const [songs, setSongs] = useState<ISong[]>([{_id: '0', songName: 'Die Alone', songUrl: 'https://res.cloudinary.com/dtxybpzwd/video/upload/v1713534225/music-app/die-alone_qsb4zi.mp3'}])
+  const [songs, setSongs] = useState<ISong[]>([])
   const [currentSong, setCurrentSong] = useState<number>(0)
 
   const toggleRepeatType = () => {

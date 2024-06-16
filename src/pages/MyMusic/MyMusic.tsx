@@ -1,15 +1,17 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import { FC, memo, ReactNode, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 import { ChevronRightFilledIcon, LoadingIcon, MusicFilledIcon } from "@/assets/icons/filled";
-import { AlbumOutlinedIcon, ChartOutlinedIcon, UploadOutlinedIcon } from "@/assets/icons/outlined";
+import { ChartOutlinedIcon, UploadOutlinedIcon } from "@/assets/icons/outlined";
 import { HeaderLayout } from "@/layouts";
 import { PlaylistCard } from "@/components/ui";
 import { PlaylistIcon } from "@/assets/icons";
 import { ErrorResponse, pathOfRoutes } from "@/utils";
 import { IFavorite, IPlaylist, ISong } from "@/interfaces";
-import { getPlaylists, getSongs } from "@/services";
+import { getPlaylists, getSongByOwnerId } from "@/services";
+import { useAuth } from "@/hooks";
+import { getSongsFromFavorite } from "@/services/apis/favorite/favoriteService.service.ts";
 
 interface LoadingProps {
   loading: boolean
@@ -37,27 +39,33 @@ export const MyMusic = () => {
   const [overview, setOverview] = useState<OverviewProps>(initialOverviewState)
   const navigate = useNavigate();
 
+  const user = useAuth()!
+
   console.log("MY MUSIC - RE-RENDER")
 
   useEffect(() => {
     (async () => {
-      const [playlistResponse, songResponse] = await Promise.allSettled([
+      const keys = Object.keys(overview)
+      let fetchData = { ...overview }
+      const responses = await Promise.allSettled([
+        getSongsFromFavorite(user._id),
         getPlaylists(),
-        getSongs(),
+        getSongByOwnerId(user._id),
       ])
 
-      if (playlistResponse.status === 'fulfilled') {
-        const response = playlistResponse.value
-        // console.log(response)
-        if (response instanceof ErrorResponse) toast.error(response.error)
-        else setOverview(prevState => ({ ...prevState, playlists: response.data ? response.data : prevState.playlists }))
-      }
+      responses.forEach((response, index) => {
+        if (response.status === 'fulfilled') {
+          const result = response.value
+          if (result instanceof ErrorResponse) {
+            toast.error(result.error)
+          } else {
+            const data = result.data
+            data && (fetchData = { ...fetchData, [keys[index]]: data })
+          }
+        }
+      })
 
-      if (songResponse.status === 'fulfilled') {
-        const response = songResponse.value
-        if (response instanceof ErrorResponse) toast.error(response.error)
-        else setOverview(prevState => ({ ...prevState, uploads: response.data ? response.data : prevState.uploads }))
-      }
+      setOverview(fetchData)
 
       setLoading(prevState => ({ ...prevState, loading: false }))
     })()
@@ -69,7 +77,7 @@ export const MyMusic = () => {
 
   return <div>
     <HeaderLayout></HeaderLayout>
-    <h2 className={`text-title-large font-bold`}>Overview</h2>
+    <h2 className={`text-title-medium font-bold`}>Overview</h2>
     <section className={`py-8 flex snap-mandatory overflow-x-auto scroll-hidden gap-8`}>
       <OverviewCard
         title={'Favorite music'}
@@ -92,22 +100,19 @@ export const MyMusic = () => {
         isActive={false}
         onClick={() => navigate(`/dashboard/${pathOfRoutes.PLAYLIST}`)}
       />
-      <OverviewCard
-        title={'Album'}
-        icon={<AlbumOutlinedIcon color={'white'} width={30} height={30} />}
-        number={1234}
-        isActive={false}
-        onClick={() => navigate(`/dashboard/${pathOfRoutes.ALBUM}`)}
-      />
     </section>
 
     <section className={`pt-10`}>
-      <h2 className={`text-title-large font-bold`}>Recent Played</h2>
+      <h2 className={`text-title-medium font-bold`}>Recent Played</h2>
       <div className={`flex py-8 snap-mandatory overflow-x-auto scroll-hidden gap-8`}>
-        <PlaylistCard className={'shrink-0'} thumb={"https://indieshark.com/wp-content/uploads/2021/02/Untitled-2.png"} name={"Die alone"} authors={['K-391']} />
-        <PlaylistCard className={'shrink-0'} thumb={"https://indieshark.com/wp-content/uploads/2021/02/Untitled-2.png"} name={"Die alone"} authors={['K-391']} />
-        <PlaylistCard className={'shrink-0'} thumb={"https://indieshark.com/wp-content/uploads/2021/02/Untitled-2.png"} name={"Die alone"} authors={['K-391']} />
-        <PlaylistCard className={'shrink-0'} thumb={"https://indieshark.com/wp-content/uploads/2021/02/Untitled-2.png"} name={"Die alone"} authors={['K-391']} />
+        <PlaylistCard className={'shrink-0'} thumb={"https://indieshark.com/wp-content/uploads/2021/02/Untitled-2.png"}
+                      name={"Die alone"} authors={['K-391']} />
+        <PlaylistCard className={'shrink-0'} thumb={"https://indieshark.com/wp-content/uploads/2021/02/Untitled-2.png"}
+                      name={"Die alone"} authors={['K-391']} />
+        <PlaylistCard className={'shrink-0'} thumb={"https://indieshark.com/wp-content/uploads/2021/02/Untitled-2.png"}
+                      name={"Die alone"} authors={['K-391']} />
+        <PlaylistCard className={'shrink-0'} thumb={"https://indieshark.com/wp-content/uploads/2021/02/Untitled-2.png"}
+                      name={"Die alone"} authors={['K-391']} />
       </div>
     </section>
 
@@ -123,7 +128,7 @@ interface OverviewCardProps {
   onClick?: () => void
 }
 
-const OverviewCard: React.FC<OverviewCardProps> = React.memo(({ title, icon, number, isActive, onClick }) => {
+const OverviewCard: FC<OverviewCardProps> = memo(({ title, icon, number, isActive, onClick }) => {
   console.log(`${title} RE-RENDER`)
   return <div
     className={`${isActive ? 'gradient-primary' : 'bg-bg-300'} 

@@ -141,7 +141,7 @@ export const SidebarLayout: React.FC<SidebarProps> = ({ menus }) => {
               <LoadingIcon />
             </span>
           ) : (<div className={`flex flex-col overflow-y-auto`}>
-            {playlist.slice(0, 4).map(item => (
+            {playlist.slice(0, 2).map(item => (
               <Link
                 to={`/dashboard/playlist/${item._id}`}
                 key={item._id}
@@ -150,7 +150,7 @@ export const SidebarLayout: React.FC<SidebarProps> = ({ menus }) => {
                 <span>{item.name}</span>
               </Link>
             ))}
-            {playlist.length > 4 ? (
+            {playlist.length > 2 ? (
               <Link
                 to={'/dashboard/playlist'}
                 className={`p-4 cursor-pointer text-center duration-300 hover:bg-bg-300`}

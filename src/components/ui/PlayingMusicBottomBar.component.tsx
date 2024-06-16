@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Image } from "@/components/elements";
 import {
   HeartFilledIcon,
@@ -22,6 +22,8 @@ export const PlayingMusicBottomBar: React.FC = () => {
   const { isPlaying, setIsPlaying, repeatType, toggleRepeatType, isRandom, setIsRandom, isPlayerShow } = useContext(AppContext)
   const [count, setCount] = useState(0)
   const [isCurrentFavorite, setIsCurrentFavorite] = useState(true)
+
+  const ref = useRef<HTMLAudioElement>(null)
 
   useEffect(() => {
     if (!isPlaying) return
@@ -47,6 +49,7 @@ export const PlayingMusicBottomBar: React.FC = () => {
     className={`flex-between items-center duration-300 p-6 fixed bottom-0 left-0 w-full h-[100px] bg-bg-300 text-white 
     ${isPlayerShow ? 'translate-y-0' : 'translate-y-full'}`}
   >
+    <audio ref={ref} src={"https://res.cloudinary.com/dtxybpzwd/video/upload/v1718171448/music-app/kdyycubdhdxvikl3hpnw.mp3"} />
     <div className={`h-full items-center flex gap-4`}>
       <Image
         src={defaultAvatar}

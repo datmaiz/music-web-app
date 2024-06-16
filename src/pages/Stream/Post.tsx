@@ -1,17 +1,18 @@
 import { IPost } from "@/interfaces";
 import { Image } from "@/components/elements";
-import { Children, memo, useState } from "react";
+import { Children, memo, useCallback, useState } from "react";
 import { ErrorResponse, timeSince } from "@/utils";
 import { CommentOutlinedIcon, HeartOutlinedIcon } from "@/assets/icons/outlined";
 import { PlusIcon } from "@/assets/icons";
 import { Link } from "react-router-dom";
-import { updatePost } from "@/services";
+import { deletePost, updatePost } from "@/services";
 import { useAuth } from "@/hooks";
 import { toast } from "react-toastify";
 import { HeartFilledIcon, VerticalThreeDotsFilledIcon } from "@/assets/icons/filled";
 
 interface PostComponentProps {
   post: IPost
+  onDeleteSuccess: (postId: string) => void
   onPreviewImage: (images: string[], index: number) => void
 }
 
@@ -23,13 +24,18 @@ interface PostComponentProps {
 //   'https://images.pexels.com/photos/257360/pexels-photo-257360.jpeg?cs=srgb&dl=pexels-pixabay-257360.jpg&fm=jpg'
 // ]
 
-export const Post = memo(({ post, onPreviewImage }: PostComponentProps) => {
+export const Post = memo(({ post, onPreviewImage, onDeleteSuccess }: PostComponentProps) => {
   const [isShowFullTitle, setIsShowFullTitle] = useState<boolean>(false)
   const user = useAuth()!
   const [isLiked, setIsLiked] = useState<boolean>(post.likes.includes(user._id))
   const [isDropdownShowed, setIsDropdownShowed] = useState<boolean>(false)
 
   const handleLikePost = async () => {
+    if (user.isAdmin) {
+      alert('You are admin, so you cant interact this post')
+      return
+    }
+
     if (isLiked) {
       post.likes = post.likes.filter(ownerId => ownerId !== user._id)
     } else {
@@ -40,11 +46,21 @@ export const Post = memo(({ post, onPreviewImage }: PostComponentProps) => {
     const response = await updatePost({ likes: post.likes }, post._id)
     if (response instanceof ErrorResponse) {
       toast.error(response.error)
-      return
+    } else {
+      toast.success(response.message)
     }
-
-    console.log(response.data)
   }
+
+  const onDelete = useCallback(async () => {
+    const response = await deletePost(post._id)
+    if (response instanceof ErrorResponse) {
+      toast.error(response.error)
+    } else {
+      toast.success(response.message)
+      onDeleteSuccess(post._id)
+    }
+    setIsDropdownShowed(false)
+  }, [])
 
   return <article className={'max-w-[40rem] mx-auto bg-bg-300 p-4 md:p-6 rounded-lg shadow-lg'}>
     <div className={'flex-between items-center pb-4 relative'}>
@@ -69,12 +85,8 @@ export const Post = memo(({ post, onPreviewImage }: PostComponentProps) => {
         <VerticalThreeDotsFilledIcon />
       </span>
 
-    {/* Dropdown */}
-      {<div className={`absolute right-0 top-full w-32 h-32 bg-bg z-[1] rounded-lg duration-300 ${isDropdownShowed ? '' : 'scale-0'}`}>
-        <p
-          className={'px-4 py-2 duration-300 hover:opacity-80 cursor-pointer'}
-        ><span className={'truncate'}>Edit post</span></p>
-      </div>}
+      {/* Dropdown */}
+      <DropDown onDelete={onDelete} isDropdownShowed={isDropdownShowed} />
     </div>
 
     <p className={`pb-4 text-body-medium`}>
@@ -89,17 +101,18 @@ export const Post = memo(({ post, onPreviewImage }: PostComponentProps) => {
       >{isShowFullTitle ? 'Make short' : 'More'}</span>
     </p>
 
-    <div className={`grid grid-cols-2 gap-2 ${post.images.length > 4 ? '[&>*:nth-child(4)]:backdrop-contrast-200' : ''}`}>
+    <div
+      className={`grid grid-cols-2 gap-2 ${post.images.length > 4 ? '[&>*:nth-child(4)]:backdrop-contrast-200' : ''}`}>
       {Children.toArray(post.images.slice(0, 4).map((image, index) => (
         <div
-          className={`rounded-xl relative overflow-hidden before:absolute before:inset-0 cursor-pointer hover:opacity-80 duration-300 
+          className={`${(post.images.length % 2 === 1 && index === post.images.length - 1) ? 'col-span-2' : ''} rounded-xl relative overflow-hidden before:absolute before:inset-0 cursor-pointer hover:opacity-80 duration-300 
         ${post.images.length > 4 && index === 3 ? 'before:bg-[#000b]' : ''}`}
           onClick={() => onPreviewImage(post.images, index)}
         >
           <Image
             src={image}
             shape={'rounded'}
-            wrapperClass={' w-full h-full cursor-pointer duration-300 hover:opacity-80'}
+            wrapperClass={` w-full h-full cursor-pointer duration-300 hover:opacity-80`}
             className={'rounded-xl w-full aspect-video object-cover'}
           />
           {post.images.length > 4 && index === 3 && (
@@ -127,8 +140,38 @@ export const Post = memo(({ post, onPreviewImage }: PostComponentProps) => {
       </span>
       <span className={'cursor-pointer flex items-center gap-4'}>
         <CommentOutlinedIcon width={40} height={40} />
-        <span className={'text-body-large'}>{post.shares.length}</span>
+        <span className={'text-body-large'}>{post.comments.length}</span>
       </span>
     </div>
   </article>
 })
+
+interface DropdownProps {
+  isDropdownShowed: boolean
+  onDelete: () => void
+}
+
+const DropDown = ({ isDropdownShowed, onDelete } : DropdownProps) => {
+  const user = useAuth()!
+
+  return user.isAdmin ? (
+    <div
+      className={`absolute right-0 top-full w-32 h-32 bg-bg z-[1] rounded-lg duration-300 ${isDropdownShowed ? '' : 'scale-0'}`}>
+      <p
+        className={'px-4 py-2 duration-300 hover:opacity-80 cursor-pointer'}
+      >
+        <span
+          onClick={onDelete}
+          className={'truncate'}
+        >Delete post</span>
+      </p>
+    </div>
+  ) : (
+    <div
+      className={`absolute right-0 top-full w-32 h-32 bg-bg z-[1] rounded-lg duration-300 ${isDropdownShowed ? '' : 'scale-0'}`}>
+      <p
+        className={'px-4 py-2 duration-300 hover:opacity-80 cursor-pointer'}
+      ><span className={'truncate'}>Edit post</span></p>
+    </div>
+  )
+}

@@ -9,7 +9,7 @@ export const getPlaylists = async (): Promise<SuccessResponse<IPlaylist[]> | Err
   } catch (error) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
-    return new ErrorResponse(err.response.data.error)
+    return new ErrorResponse(error.response.data.error)
   }
 }
 
@@ -20,7 +20,7 @@ export const getPlaylistsByOwnerId = async (ownerId: string): Promise<SuccessRes
   } catch (error) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
-    return new ErrorResponse(err.response.data.error)
+    return new ErrorResponse(error.response.data.error)
   }
 }
 
@@ -31,7 +31,7 @@ export const getPlaylist = async (playlistId: string): Promise<SuccessResponse<I
   } catch (error) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
-    return new ErrorResponse(err.response.data.error)
+    return new ErrorResponse(error.response.data.error)
   }
 }
 
@@ -42,7 +42,7 @@ export const createPlaylist = async (playlist: Partial<IPlaylist>): Promise<Succ
   } catch (error) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
-    return new ErrorResponse(err.response.data.error)
+    return new ErrorResponse(error.response.data.error)
   }
 }
 
@@ -53,7 +53,7 @@ export const addSongToPlaylist = async (playlistId: string, songId: string): Pro
   } catch (error) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
-    return new ErrorResponse(err.response.data.error)
+    return new ErrorResponse(error.response.data.error)
   }
 }
 
@@ -64,7 +64,7 @@ export const deleteSongFromPlaylist = async (playlistId: string, songId: string)
   } catch (error) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
-    return new ErrorResponse(err.response.data.error)
+    return new ErrorResponse(error.response.data.error)
   }
 }
 
@@ -75,6 +75,6 @@ export const deletePlaylist = async (playlistId: string): Promise<SuccessRespons
   } catch (error) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
-    return new ErrorResponse(err.response.data.error)
+    return new ErrorResponse(error.response.data.error)
   }
 }

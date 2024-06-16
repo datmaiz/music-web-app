@@ -1,11 +1,11 @@
 import { Suspense, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import { SidebarLayout } from "@/layouts/Sidebar.layout.tsx";
 import { Menu } from "@/assets/icons";
 import { PlayingMusicBottomBar, ScrollToTopButtonComponent } from "@/components/ui";
 import { AppContext } from "@/context";
-import { globalColor } from "@/utils";
+import { globalColor, pathOfRoutes } from "@/utils";
 import { adminMenus, clientMenus } from "@/config";
 import { useAuth } from "@/hooks";
 import { ChevronUpFilledIcon, LoadingIcon } from "@/assets/icons/filled";
@@ -25,11 +25,22 @@ export const Layout = () => {
   const { isPlayerShow } = useContext(AppContext)
 
   const user = useAuth()
-  const containerRef = useRef<HTMLDivElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null)
+  const navigate = useNavigate()
 
   const toggleSidebar = () => {
     setIsSidebarOpened(!isSidebarOpened)
   }
+
+  useEffect(() => {
+    if(user?.isAdmin) {
+      navigate(`admin/${pathOfRoutes.USER_MANAGEMENT}`)
+    } else if (!user?.isAdmin) {
+      navigate(pathOfRoutes.DASHBOARD)
+    } else {
+      navigate(pathOfRoutes.LOGIN)
+    }
+  }, [user]);
 
   return <div className={'h-dvh bg-bg'}>
     <ScrollToTop />

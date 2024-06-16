@@ -19,10 +19,11 @@ export const pathOfRoutes = {
   ADMIN: 'admin',
   USER_MANAGEMENT: 'users-management',
   MUSIC_MANAGEMENT: 'musics-management',
+  POST_MANAGEMENT: 'posts-management',
   USER_DETAIL: 'user/:userId',
   PLAYLIST_DETAIL: `playlist/:playlistId`,
   STREAM: 'stream',
-  POST_DETAIL: 'posts/:postId'
+  POST_DETAIL: 'posts/:postId',
 }
 
 export enum Role {

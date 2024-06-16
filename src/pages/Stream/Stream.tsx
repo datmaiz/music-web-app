@@ -267,12 +267,13 @@ export const Stream = () => {
         </div>
       </div>
 
-      <PreviewImages URLs={images.imageURLs} handleDeleteImage={deleteImageFromPreview} />
+      {images.imageURLs.length > 0 &&
+          <PreviewImages URLs={images.imageURLs} handleDeleteImage={deleteImageFromPreview} />}
 
       <Button
         shape={'rectangle'}
         variant={'outlined'}
-        className={'w-[200px] flex-center'}
+        className={'w-[200px] flex-center mt-4'}
         onClick={handlePost}
         disabled={loading.uploadingPost}
       >{loading.uploadingPost ? <LoadingIcon className={'block mx-auto'} /> : 'Post now'}</Button>
@@ -299,12 +300,15 @@ interface PostProps {
 }
 
 const Posts = memo(({ posts, handleLightBox }: PostProps) => {
-  return <div className={'flex flex-col gap-6'}>
-    {Children.toArray(posts.map(post => (
-      <Post
+  return <div className={''}>
+    {Children.toArray(posts.map((post, index) => (
+      <div className={index != posts.length - 1 ? 'pb-8' : ''}>
+        <Post
         post={post}
         onPreviewImage={handleLightBox}
+        onDeleteSuccess={() => {}}
       />
+      </div>
     )))}
   </div>
 })

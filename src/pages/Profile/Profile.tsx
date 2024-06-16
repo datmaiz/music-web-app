@@ -96,40 +96,6 @@ export const Profile = () => {
 
       setMusicProfile(data)
       setLoading({ ...loading, loading: false })
-
-      // [songsResponse, playlistsResponse, postsResponse]
-      // const profile = { ...musicProfile }
-      // if (songsResponse.status === 'fulfilled') {
-      //   const response = songsResponse.value
-      //   if (response instanceof ErrorResponse) {
-      //     toast.error(response.error)
-      //   } else {
-      //     profile.uploaded = response.data ? response.data : profile.uploaded
-      //   }
-      // }
-      // if (playlistsResponse.status === 'fulfilled') {
-      //   const response = playlistsResponse.value
-      //   if (response instanceof ErrorResponse) {
-      //     toast.error(response.error)
-      //   } else {
-      //     profile.playlists = response.data ? response.data : profile.playlists
-      //   }
-      //
-      //   setMusicProfile(profile)
-      //   setLoading({ ...loading, loading: false })
-      // }
-      // if (postsResponse.status === 'fulfilled') {
-      //   const response = postsResponse.value
-      //   if (response instanceof ErrorResponse) {
-      //     toast.error(response.error)
-      //   } else {
-      //     setPosts(response.data ?? [])
-      //     profile.posts = response.data ? response.data : profile.posts
-      //   }
-      //
-      //   setMusicProfile(profile)
-      //   setLoading({ ...loading, loading: false })
-      // }
     })()
   }, [])
 
@@ -279,11 +245,14 @@ export const Profile = () => {
     <section>
       <h2 className={'text-title-medium font-bold pt-8'}>Your posts:</h2>
       <div className={'flex flex-col gap-4 pt-8'}>
-        {Children.toArray(musicProfile. posts.map(post => (
-          <Post
-            post={post}
-            onPreviewImage={handleLightBox}
-          />
+        {Children.toArray(musicProfile.posts.map((post, index) => (
+          <div className={index != musicProfile.posts.length - 1 ? 'pb-8' : ''}>
+            <Post
+              post={post}
+              onPreviewImage={handleLightBox}
+              onDeleteSuccess={() => {}}
+            />
+          </div>
         )))}
       </div>
     </section>

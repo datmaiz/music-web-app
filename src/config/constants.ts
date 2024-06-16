@@ -37,14 +37,19 @@ export const clientMenus: IMenuItem[] = [
 
 export const adminMenus: IMenuItem[] = [
   {
-    title: 'Users Management',
+    title: 'User Management',
     path: '/admin/users-management',
     icon: UsersManagementOutlinedIcon
   },
   {
-    title: 'Musics Management',
+    title: 'Music Management',
     path: '/admin/musics-management',
     icon: MusicManagementOutlinedIcon
+  },
+  {
+    title: 'Post Management',
+    path: '/admin/posts-management',
+    icon: PostCardOutlinedIcon
   },
 ]
 

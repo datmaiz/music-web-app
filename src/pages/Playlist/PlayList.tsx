@@ -25,6 +25,7 @@ const PlayList = () => {
   useEffect(() => {
     (async () => {
       if (!playlistId) return
+      setLoading({...loading, loading: true})
       const response = await getPlaylist(playlistId)
       setLoading(prevState => ({ ...prevState, loading: false }))
       if (response instanceof ErrorResponse) {
@@ -34,7 +35,7 @@ const PlayList = () => {
 
       setPlaylist(response.data)
     })()
-  }, [])
+  }, [playlistId])
 
   if (loading.loading) return <div className={'w-full h-full flex-center'}>
     <LoadingIcon width={50} height={50} />
@@ -45,7 +46,7 @@ const PlayList = () => {
     <section>
       <h2 className={'text-title-large font-bold uppercase'}>{playlist?.name}</h2>
       <p className={'pt-2 text-title-small'}>{user.username}</p>
-      <p className={'pt-2 text-body-medium'}>{playlist?.songs?.length} songs • {playlist?.songs?.reduce((acc, cur) => acc + cur.duration, 0)} minutes</p>
+      <p className={'pt-2 text-body-medium'}>{playlist?.songs?.length} songs</p>
     </section>
   </div>
 }

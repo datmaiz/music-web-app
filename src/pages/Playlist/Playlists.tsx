@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 import { deletePlaylist, getPlaylists } from "@/services";
@@ -11,21 +11,42 @@ import { DeleteOutlinedIcon } from "@/assets/icons/outlined";
 import { useNavigate } from "react-router-dom";
 import { LoadingIcon } from "@/assets/icons/filled";
 
+interface LoadingProps {
+  fetching: boolean
+  deleting: boolean
+}
+
+const initialLoadingProps: LoadingProps = {
+  deleting: false,
+  fetching: true
+}
+
 const Playlists = () => {
   const [playlists, setPlaylists] = useState<IPlaylist[]>([])
+  const [loading, setLoading] = useState<LoadingProps>(initialLoadingProps)
+
+  const handleDeletePlaylist = useCallback(async (playlistId: string) => {
+    const response = await deletePlaylist(playlistId)
+    if (response instanceof ErrorResponse) {
+      toast.error(response.error)
+    } else {
+      const newPlaylists = playlists.filter(playlist => playlist._id !== playlistId)
+      setPlaylists(newPlaylists)
+    }
+  }, [playlists])
 
   useEffect(() => {
     (async () => {
       const response = await getPlaylists()
       if (response instanceof ErrorResponse) {
         toast.error(response.error)
-        return
+      } else {
+        const allPlaylist = response.data
+        allPlaylist && setPlaylists(allPlaylist)
       }
-
-      const allPlaylist = response.data
-      allPlaylist && setPlaylists(allPlaylist)
+      setLoading({ ...loading, fetching: false })
     })()
-  })
+  }, [])
 
   return <div>
     <HeaderLayout>
@@ -34,7 +55,14 @@ const Playlists = () => {
     <section>
       <h2 className={'text-title-large font-bold'}>Your playlists:</h2>
       <div className={`flex flex-col pt-8`}>
-        {playlists.map(playlist => <PlaylistItem key={playlist._id} playlist={playlist} />)}
+        {loading.fetching ? (
+          <div className={'flex-center'}>
+            <LoadingIcon width={50} height={50} />
+          </div>
+        ) : (
+          playlists.map(playlist => <PlaylistItem key={playlist._id} playlist={playlist}
+                                                  onDelete={handleDeletePlaylist} />
+          ))}
       </div>
     </section>
   </div>
@@ -42,17 +70,13 @@ const Playlists = () => {
 
 interface PlaylistItemProps {
   playlist: IPlaylist
-  onDelete?: (id: string) => void
-}
-
-interface LoadingProps {
-  deleting: boolean
+  onDelete: (id: string) => Promise<void>
 }
 
 const PlaylistItem: React.FC<PlaylistItemProps> = ({ playlist, onDelete }) => {
   const [loading, setLoading] = useState<LoadingProps>({
     deleting: false,
-
+    fetching: false
   })
   const { name, _id } = playlist
   const { username } = useAuth()!
@@ -62,16 +86,8 @@ const PlaylistItem: React.FC<PlaylistItemProps> = ({ playlist, onDelete }) => {
     (async () => {
       e.stopPropagation()
       setLoading(prevState => ({ ...prevState, deleting: true }))
-      setTimeout(() => {
-        setLoading(prevState => ({ ...prevState, deleting: false}))
-      }, 2000)
-      onDelete && onDelete(id)
-      // const response = await deletePlaylist(id)
-      // setLoading(prevState => ({ ...prevState, deleting: false }))
-      // if (response instanceof ErrorResponse) {
-      //   toast.error(response.error)
-      //   return
-      // }
+      await onDelete(id)
+      setLoading(prevState => ({ ...prevState, deleting: false }))
     })()
   }
 
@@ -93,9 +109,11 @@ const PlaylistItem: React.FC<PlaylistItemProps> = ({ playlist, onDelete }) => {
       <span
         onClick={(e) => handleDelete(e, _id)}
       >
-        {loading.deleting ?
-          <LoadingIcon /> :
-          <DeleteOutlinedIcon color={'currentColor'} className={`hover:text-secondary duration-300`} />}
+        {loading.deleting ? (
+          <LoadingIcon />
+        ) : (
+          <DeleteOutlinedIcon color={'currentColor'} className={`hover:text-secondary duration-300`} />
+        )}
       </span>
     </div>
   </div>
