@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import React, { useCallback, useContext, useEffect, useState } from "react"
 import { PlaylistCard, SongItem } from "@/components/ui"
 import { HeaderLayout } from "@/layouts"
 import { useAuth } from "@/hooks"
 import { getSongs } from "@/services"
-import { ErrorResponse, shuffleArray } from "@/utils"
+import { ErrorResponse } from "@/utils"
 import { toast } from "react-toastify"
 import { IFavorite, ISong } from "@/interfaces"
 import { LoadingIcon } from "@/assets/icons/filled";
@@ -12,6 +12,7 @@ import {
   deleteSongsFromFavorite,
   getFavorite
 } from "@/services/apis/favorite/favoriteService.service.ts";
+import { AppContext } from "@/context";
 
 interface LoadingProps {
   fetching: boolean
@@ -49,11 +50,9 @@ const initialLoadingProps: LoadingProps = {
 export const Home: React.FC = () => {
   const [loading, setLoading] = useState<LoadingProps>(initialLoadingProps)
   const [state, setState] = useState<HomeState>(initialHomeState)
-  const randomSongs = useMemo(() => {
-    return shuffleArray(state.songs)
-  }, [state.songs])
 
   const user = useAuth()!
+  const { setSongs, setIsPlayerShow, setCurrentSong } = useContext(AppContext)
 
   const handleAddToFavorite = useCallback(async (song: ISong) => {
     const newFavorite = {
@@ -79,8 +78,14 @@ export const Home: React.FC = () => {
     if (response instanceof ErrorResponse) {
       toast.error(response.error)
     }
-    console.log(state)
   }, [state])
+
+  const handleSongItemClick = (songId: string) => {
+    const index = state.songs.findIndex(song => song._id === songId)
+    setSongs(state.songs)
+    setCurrentSong(index)
+    setIsPlayerShow(true)
+  }
 
   useEffect(() => {
     (async () => {
@@ -135,8 +140,9 @@ export const Home: React.FC = () => {
         <span className={`text-secondary cursor-pointer font-bold`}>See more</span>
       </div>
       <div className={`flex gap-6 snap-mandatory overflow-auto scroll-hidden`}>
-        {randomSongs.map(song => (
+        {state.songs.map(song => (
           <PlaylistCard
+            onClick={() => handleSongItemClick(song._id)}
             key={song._id}
             name={song.name}
             thumb={song.thumb}
@@ -157,8 +163,9 @@ export const Home: React.FC = () => {
         <span className={`text-secondary cursor-pointer font-bold`}>See more</span>
       </div>
       <div className={`flex flex-col`}>
-        {randomSongs.map(song => (
+        {state.songs.map(song => (
           <SongItem
+            onClick={() => handleSongItemClick(song._id)}
             onRemoveFromFavorite={handleRemoveFromFavorite}
             onAddToFavorite={handleAddToFavorite}
             song={song}

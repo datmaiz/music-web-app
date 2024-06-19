@@ -91,7 +91,7 @@ export const SidebarLayout: React.FC<SidebarProps> = ({ menus }) => {
   }, [])
 
   return <aside
-    className={`flex flex-col justify-between py-4 h-full text-white overflow-hidden duration-1000 ${isPlayerShow ? 'pb-[100px]' : ''}`}>
+    className={`flex flex-col justify-between py-4 h-full text-white overflow-hidden duration-1000 ${isPlayerShow || !user?.isAdmin ? 'pb-[100px]' : ''}`}>
     <div className={`flex flex-col`}>
       <span className={'flex justify-center p-4'}>
         <Logo color={'orange'} />

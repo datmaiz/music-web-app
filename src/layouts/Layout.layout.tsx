@@ -40,7 +40,7 @@ export const Layout = () => {
     } else {
       navigate(pathOfRoutes.LOGIN)
     }
-  }, [user]);
+  }, []);
 
   return <div className={'h-dvh bg-bg'}>
     <ScrollToTop />
@@ -66,7 +66,7 @@ export const Layout = () => {
         <Suspense fallback={<div className={'w-full h-dvh flex-center'}><LoadingIcon color={'white'} width={50} height={50} /></div>}>
           <div className={'scroll-watcher'}></div>
           <Outlet />
-          <PlayingMusicBottomBar />
+          {!user?.isAdmin && <PlayingMusicBottomBar />}
           {isPlayerShow && <div className={'h-4'}></div>}
         </Suspense>
 

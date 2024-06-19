@@ -6,6 +6,7 @@ interface IPlaylistCardProps {
   name: string,
   authors: string[],
   className?: string,
+  onClick: () => void
 }
 
 export const PlaylistCard: React.FC<IPlaylistCardProps> = (
@@ -13,10 +14,12 @@ export const PlaylistCard: React.FC<IPlaylistCardProps> = (
     thumb,
     name,
     authors,
-    className
+    className,
+    onClick
   }
 ) => {
   return <article
+    onClick={onClick}
     className={`relative text-white overflow-hidden rounded-xl cursor-pointer duration-500 hover:opacity-70 shadow-xl shadow-black ${className}`}
   >
     <Image

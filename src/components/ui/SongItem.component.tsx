@@ -9,9 +9,10 @@ interface SongItemProps {
   song: ISong
   onAddToFavorite: (song: ISong) => void
   onRemoveFromFavorite: (song: ISong) => void
+  onClick: () => void
 }
 
-export const SongItem = ({ className, isFavorite, song, onAddToFavorite, onRemoveFromFavorite }: SongItemProps) => {
+export const SongItem = ({ className, isFavorite, song, onAddToFavorite, onRemoveFromFavorite, onClick }: SongItemProps) => {
   const handleToggleFavorite = () => {
     if (isFavorite) {
       onRemoveFromFavorite(song)
@@ -20,7 +21,9 @@ export const SongItem = ({ className, isFavorite, song, onAddToFavorite, onRemov
     }
   }
 
-  return <div className={`grid gap-4 
+  return <div
+    onClick={onClick}
+    className={`grid gap-4 
   grid-cols-[1fr_150px]
   md:grid-cols-[1fr_100px_150px]
   lg:grid-cols-[1fr_200px_100px_150px]

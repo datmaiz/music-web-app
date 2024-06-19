@@ -46,7 +46,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [repeatType, setRepeatType] = useState<TRepeat>('none');
   const [isRandom, setIsRandom] = useState<boolean>(false)
-  const [isPlayerShow, setIsPlayerShow] = useState<boolean>(true)
+  const [isPlayerShow, setIsPlayerShow] = useState<boolean>(false)
   const [songs, setSongs] = useState<ISong[]>([])
   const [currentSong, setCurrentSong] = useState<number>(0)
 

@@ -9,6 +9,7 @@ import ImageOutlinedIcon from './ImageOutlinedIcon.svg?react'
 import LogoutOutlinedIcon from './LogoutOutlinedIcon.svg?react'
 import LoopOutlinedIcon from './LoopOutlinedIcon.svg?react'
 import MusicManagementOutlinedIcon from './MusicManagementOutlinedIcon.svg?react'
+import MutedOutlinedIcon from './MutedOutlinedIcon.svg?react'
 import PostCardOutlinedIcon from './PostCardOutlinedIcon.svg?react'
 import SearchOutlinedIcon from './GlassOutlinedIcon.svg?react'
 import ReactangleAddOutlinedIcon from './RectangleAddOutlinedIcon.svg?react'
@@ -32,6 +33,7 @@ export {
   ImageOutlinedIcon,
   LogoutOutlinedIcon,
   LoopOutlinedIcon,
+  MutedOutlinedIcon,
   MusicManagementOutlinedIcon,
   PostCardOutlinedIcon,
   ReactangleAddOutlinedIcon,
